@@ -115,16 +115,16 @@ function self.inTable(searchTable, element)
 	return false
 end
 
-function self.round(x, n)
-	-- n = math.pow(10, n or 0)
-	n = 10^(n or 0)
-	x = x * n
-	if x >= 0 then
-		x = math.floor(x + 0.5)
+function self.round(value, decimals)
+	if value >= 0 and decimals and decimals > 0 then
+		return math.floor( (value * 10 ^ decimals) + 0.5) / (10 ^ decimals)
+	elseif value >=0 then
+		return math.floor(value + 0.5)
+	elseif decimals and decimals > 0 then
+		return math.ceil ( (value * 10 ^ decimals) - 0.5) / (10 ^ decimals)
 	else
-		x = math.ceil(x - 0.5)
+		return math.ceil(value - 0.5)
 	end
-	return x / n
 end
 
 function string.sMatch(text, match) -- add sanitized match function to string "library"
@@ -468,11 +468,11 @@ function self.dumpSelection(object, selection)
 				self.print('> ' .. attr .. ': ' .. tostring(value))
 			end
 		end
-        if object.baseType ~= 'hardware' then 
-            self.print('')
-            self.print('> lastUpdate: ' .. (object.lastUpdate.raw or '') )
+		if object.baseType ~= 'hardware' then 
+			self.print('')
+			self.print('> lastUpdate: ' .. (object.lastUpdate.raw or '') )
 		end
-        if object.baseType ~= 'variable'  and object.baseType ~= 'hardware' then
+		if object.baseType ~= 'variable'  and object.baseType ~= 'hardware' then
 			self.print('> adapters: ' .. table.concat(object._adapters or {},', ') )
 		end
 		if object.baseType == 'device' then
